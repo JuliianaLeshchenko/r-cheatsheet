@@ -1,0 +1,101 @@
+temp <- read.csv(file = 'Table_temp.csv')
+df <- data.frame(temp)
+#find data type of every variable in data frame
+str(df)
+attach(df)
+par(mfrow=c(3,1))
+hist(PA1)
+hist(PA2)
+hist(PA3) #looks like normal distribution
+hist(BK1)
+hist(BK2)
+hist(BK3) #looks like normal distribution
+#It's best to use the mean when the distribution of the data values is symmetrical and there are no clear outliers
+PA <- as.data.frame(c(PA1, PA2, PA3))
+meanPA <-rowMeans(PA, na.rm=TRUE)
+df$date = as.Date(df$Series, format = "%Y/%m/%d %H:%M:%S")
+BK <- as.data.frame(c(BK1, BK2, BK3))
+meanBK <-rowMeans(BK, na.rm=TRUE)
+date <-df$Series
+date_true <-as.POSIXlt(date,format="%m/%d/%Y %H:%M",tz=Sys.timezone())
+date_true
+new_df <- cbind.data.frame(date_true, meanPA)
+new_df["Locality"] <- "PA"
+colnames(new_df)[2] <- "mean"
+new_df <- new_df[-c(61434:71067), ]
+new_df1 <- cbind.data.frame(date_true, meanBK)
+new_df1["Locality"] <- "BK"
+colnames(new_df1)[2] <- "mean"
+new_df1 <- new_df1[-c(61434:71067), ]
+dataset <- rbind(new_df, new_df1)
+
+dettach()
+detach(df)
+attach(new_df)
+install.packages("quantmod")
+library(quantmod)
+library(dplyr)
+library(ggplot2)
+str(dataset)
+class(dataset)
+dataset$date = as.Date(dataset$date_true, format = "%Y/%m/%d %H:%M:%S")
+ggplot(dataset, 
+       aes(x=date, y= mean, color=Locality) + 
+  geom_line(size=1) +
+  scale_x_date(date_breaks = '1 day') +
+  labs(title = "Like this?",
+       subtitle = "something here",
+       caption = "or here",
+       y = "date") +
+  geom_rect(data = dataset, 
+            aes(xmin = as.Date("2017-10-17", "%Y-%m-%d"), 
+                xmax = as.Date("2018-12-03",  "%Y-%m-%d"),
+                ymin = -Inf, 
+                ymax = Inf))+
+  theme_minimal() +
+  scale_color_brewer(palette = "Dark2")
+  
+  dataset[c(rep(FALSE, 9), TRUE),]
+  
+  ggplot(mseries, 
+         aes(x=date, y= mean, color=Locality)) + 
+    geom_line(size=1) +
+    scale_x_date(date_breaks = '1 month', 
+                 labels = scales::date_format("%b")) +
+    scale_y_continuous(limits = c(-10, 25), 
+                       breaks = seq(150, 220, 10),
+                       labels = scales::dollar) +
+    labs(title = "NASDAQ Closing Prices",
+         subtitle = "Jan - Aug 2018",
+         caption = "source: Yahoo Finance",
+         y = "Closing Price") +
+    theme_minimal() +
+    scale_color_brewer(palette = "Dark2")
+  ggplot() + geom_line(data = dataset[seq(1, nrow(dataset), 200), ], aes(x=date, y= mean, color=Locality))
+  library(scales)
+  ggplot() + geom_line(data = dataset[seq(1, nrow(dataset), 70), ], aes(x=date, y= mean, color=Locality)) +
+    geom_line(size=3) +
+      theme_minimal() +
+    scale_x_date(date_breaks = '1 month', 
+                labels = scales::date_format("%b-%y"))+
+      scale_color_brewer(palette = "Dark2")
+  #####################################################
+  attach(df)
+  df
+  PA <- as.data.frame(c(PA1, PA2, PA3))
+  meanPA <-rowMeans(PA, na.rm=TRUE)
+  date <-df$Series
+  date_true <-as.POSIXlt(date,format="%m/%d/%Y %H:%M",tz=Sys.timezone())
+  PA_df$date_true <- cbind.data.frame(date_true, meanPA)
+  detach(df)
+  attach(PA_df)
+  str(PA_df)
+  PA_df$date = as.Date(PA_df$true_date, format = "%Y/%m/%d")
+  PA_df <- PA_df[-c(61434:71067), ]
+  ggplot() + geom_line(data = PA_df[seq(1, nrow(PA_df), 200), ], aes(x=date_true, y= meanPA))
+  library(scales)
+  ggplot() + geom_line(data = PA_df[seq(1, nrow(dataset), 70), ], aes(x=date, y= mean, color=Locality)) +
+    geom_line(size=3) +
+    theme_minimal() +
+    scale_x_date(date_breaks = '1 month', 
+                 labels = scales::date_format("%b-%y"))
