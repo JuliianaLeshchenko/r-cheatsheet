@@ -66,3 +66,5 @@ hist(BK3) #looks like normal distribution
                  labels = scales::date_format("%b-%y")) +
     labs(x = "",
          y = "")
+#both
+databig <- rbind(data1, data2)
