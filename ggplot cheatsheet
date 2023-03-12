@@ -68,3 +68,21 @@ hist(BK3) #looks like normal distribution
          y = "")
 #both
 databig <- rbind(data1, data2)
+##########
+#Scatter plot with marginal density plots (more here: https://jtr13.github.io/cc21fall2/tutorial-for-scatter-plot-with-marginal-distribution.html)
+data <- read.csv("measurements.csv")
+as.data.frame(data)
+library(ggplot2)
+install.packages("cowplot")
+library(ggExtra)
+library(RColorBrewer)
+library(cowplot)
+library(ggpubr)
+p <- ggplot(data) +
+  geom_point(aes(x = length, y = width, color = species), alpha = 0.6, shape = 16) +  
+  scale_color_brewer(palette = "Dark2") + 
+  theme_bw() +
+  theme(legend.position = "bottom") + 
+  labs(x = "Spore Length", y = "Spore Width") 
+p
+ggMarginal(p, type = "density", groupColour = TRUE, groupFill = TRUE)
